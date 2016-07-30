@@ -1,4 +1,5 @@
 {
+  "root": true,
   "extends": "babel",
   "rules": {
     "no-confusing-arrow": 0,
