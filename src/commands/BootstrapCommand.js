@@ -14,7 +14,7 @@ export default class BootstrapCommand extends Command {
   }
 
   execute(callback) {
-    this.linkDependencies(err => {
+    this.linkDependencies((err) => {
       if (err) {
         callback(err);
       } else {
@@ -49,24 +49,24 @@ export default class BootstrapCommand extends Command {
 
       // Get all packages that have no remaining dependencies within the repo
       // that haven't yet been bootstrapped.
-      const batch = todoPackages.filter(pkg => {
+      const batch = todoPackages.filter((pkg) => {
         const node = filteredGraph.get(pkg.name);
-        return !node.dependencies.filter(dep => !donePackages[dep]).length;
+        return !node.dependencies.filter((dep) => !donePackages[dep]).length;
       });
 
-      async.parallelLimit(batch.map(pkg => done => {
+      async.parallelLimit(batch.map((pkg) => (done) => {
         async.series([
-          cb => FileSystemUtilities.mkdirp(pkg.nodeModulesLocation, cb),
-          cb => this.installExternalPackages(pkg, cb),
-          cb => this.linkDependenciesForPackage(pkg, cb),
-          cb => this.runPrepublishForPackage(pkg, cb),
-        ], err => {
+          (cb) => FileSystemUtilities.mkdirp(pkg.nodeModulesLocation, cb),
+          (cb) => this.installExternalPackages(pkg, cb),
+          (cb) => this.linkDependenciesForPackage(pkg, cb),
+          (cb) => this.runPrepublishForPackage(pkg, cb),
+        ], (err) => {
           this.progressBar.tick(pkg.name);
           donePackages[pkg.name] = true;
           todoPackages.splice(todoPackages.indexOf(pkg), 1);
           done(err);
         });
-      }), this.concurrency, err => {
+      }), this.concurrency, (err) => {
         if (todoPackages.length && !err) {
           bootstrapBatch();
         } else {
@@ -74,7 +74,7 @@ export default class BootstrapCommand extends Command {
           callback(err);
         }
       });
-    }
+    };
 
     // Kick off the first batch.
     bootstrapBatch();
@@ -100,12 +100,12 @@ export default class BootstrapCommand extends Command {
   }
 
   createLinkedDependency(src, dest, name, callback) {
-    FileSystemUtilities.rimraf(dest, err => {
+    FileSystemUtilities.rimraf(dest, (err) => {
       if (err) {
         return callback(err);
       }
 
-      FileSystemUtilities.mkdirp(dest, err => {
+      FileSystemUtilities.mkdirp(dest, (err) => {
         if (err) {
           return callback(err);
         }
@@ -128,7 +128,7 @@ export default class BootstrapCommand extends Command {
     const prefix = this.repository.linkedFiles.prefix || "";
     const indexJsFileContents = prefix + "module.exports = require(" + JSON.stringify(src) + ");";
 
-    FileSystemUtilities.writeFile(destPackageJsonLocation, packageJsonFileContents, err => {
+    FileSystemUtilities.writeFile(destPackageJsonLocation, packageJsonFileContents, (err) => {
       if (err) {
         return callback(err);
       }
@@ -141,17 +141,17 @@ export default class BootstrapCommand extends Command {
     const allDependencies = pkg.allDependencies;
 
     const externalPackages = Object.keys(allDependencies)
-      .filter(dependency => {
-        const match = find(this.packages, pkg => {
+      .filter((dependency) => {
+        const match = find(this.packages, (pkg) => {
           return pkg.name === dependency;
         });
 
         return !(match && this.hasMatchingDependency(pkg, match));
       })
-      .filter(dependency => {
+      .filter((dependency) => {
         return !this.hasDependencyInstalled(pkg, dependency);
       })
-      .map(dependency => {
+      .map((dependency) => {
         return dependency + "@" + allDependencies[dependency];
       });
 

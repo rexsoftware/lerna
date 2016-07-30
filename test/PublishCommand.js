@@ -20,11 +20,11 @@ describe("PublishCommand", () => {
   describe("normal mode", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {});
 
       publishCommand.runValidations();
@@ -78,7 +78,7 @@ describe("PublishCommand", () => {
         ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -109,11 +109,11 @@ describe("PublishCommand", () => {
   describe("independent mode", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/independent", done);
     });
 
-    it("should publish the changed packages in independent mode", done => {
+    it("should publish the changed packages in independent mode", (done) => {
       const publishCommand = new PublishCommand([], {
         independent: true
       });
@@ -174,7 +174,7 @@ describe("PublishCommand", () => {
         ]]
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -204,11 +204,11 @@ describe("PublishCommand", () => {
   describe("normal mode as canary", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {
         canary: true
       });
@@ -256,7 +256,7 @@ describe("PublishCommand", () => {
         ]]
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -292,11 +292,11 @@ describe("PublishCommand", () => {
   describe("independent mode as canary", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/independent", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {
         independent: true,
         canary: true
@@ -345,7 +345,7 @@ describe("PublishCommand", () => {
         ]]
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -379,11 +379,11 @@ describe("PublishCommand", () => {
   describe("normal mode with --skip-git", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {
         skipGit: true
       });
@@ -426,7 +426,7 @@ describe("PublishCommand", () => {
         ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -457,11 +457,11 @@ describe("PublishCommand", () => {
   describe("normal mode with --skip-npm", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should update versions and push changes but not publish", done => {
+    it("should update versions and push changes but not publish", (done) => {
       const publishCommand = new PublishCommand([], {
         skipNpm: true
       });
@@ -490,7 +490,7 @@ describe("PublishCommand", () => {
         ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -521,11 +521,11 @@ describe("PublishCommand", () => {
   describe("normal mode with --skip-git and --skip-npm", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should update versions but not push changes or publish", done => {
+    it("should update versions but not push changes or publish", (done) => {
       const publishCommand = new PublishCommand([], {
         skipGit: true,
         skipNpm: true
@@ -546,7 +546,7 @@ describe("PublishCommand", () => {
         ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -577,11 +577,11 @@ describe("PublishCommand", () => {
   describe("normal mode", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {
         npmTag: "prerelease"
       });
@@ -637,7 +637,7 @@ describe("PublishCommand", () => {
         ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -663,7 +663,7 @@ describe("PublishCommand", () => {
 
   describe("auto confirmation", () => {
 
-    it("should be possible to skip asking for confirmation", done => {
+    it("should be possible to skip asking for confirmation", (done) => {
       const publishCommand = new PublishCommand([], {
         yes: true
       });
@@ -679,11 +679,11 @@ describe("PublishCommand", () => {
   describe("normal mode with --repo-version", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("PublishCommand/normal", done);
     });
 
-    it("should publish the changed packages", done => {
+    it("should publish the changed packages", (done) => {
       const publishCommand = new PublishCommand([], {
         repoVersion: "1.0.1"
       });
@@ -736,7 +736,7 @@ describe("PublishCommand", () => {
        ]],
       ]);
 
-      publishCommand.runCommand(exitWithCode(0, err => {
+      publishCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {

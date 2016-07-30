@@ -18,11 +18,11 @@ describe("BootstrapCommand", () => {
   describe("dependencies between packages in the repo", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("BootstrapCommand/basic", done);
     });
 
-    it("should bootstrap files", done => {
+    it("should bootstrap files", (done) => {
       const bootstrapCommand = new BootstrapCommand([], {});
 
       bootstrapCommand.runValidations();
@@ -34,7 +34,7 @@ describe("BootstrapCommand", () => {
         ]]
       ]);
 
-      bootstrapCommand.runCommand(exitWithCode(0, err => {
+      bootstrapCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -72,7 +72,7 @@ describe("BootstrapCommand", () => {
       }));
     });
 
-    it("should not bootstrap an ignored package", done => {
+    it("should not bootstrap an ignored package", (done) => {
       const bootstrapCommand = new BootstrapCommand([], {
         ignore: "package-2"
       });
@@ -86,7 +86,7 @@ describe("BootstrapCommand", () => {
         ]]
       ]);
 
-      bootstrapCommand.runCommand(exitWithCode(0, err => {
+      bootstrapCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -99,7 +99,7 @@ describe("BootstrapCommand", () => {
       }));
     });
 
-    it("should not bootstrap ignored packages", done => {
+    it("should not bootstrap ignored packages", (done) => {
       const bootstrapCommand = new BootstrapCommand([], {
         ignore: "package-@(3|4)"
       });
@@ -107,7 +107,7 @@ describe("BootstrapCommand", () => {
       bootstrapCommand.runValidations();
       bootstrapCommand.runPreparations();
 
-      bootstrapCommand.runCommand(exitWithCode(0, err => {
+      bootstrapCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -124,11 +124,11 @@ describe("BootstrapCommand", () => {
   describe("external dependencies that haven't been installed", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("BootstrapCommand/cold", done);
     });
 
-    it("should get installed", done => {
+    it("should get installed", (done) => {
       const bootstrapCommand = new BootstrapCommand([], {});
 
       bootstrapCommand.runValidations();
@@ -136,13 +136,13 @@ describe("BootstrapCommand", () => {
 
       let installed = false;
       stub(ChildProcessUtilities, "spawn", (command, args, options, callback) => {
-        assert.deepEqual(args, ["install", "external@^1.0.0"])
-        assert.deepEqual(options, { cwd: path.join(testDir, "packages/package-1"), stdio: STDIO_OPT })
+        assert.deepEqual(args, ["install", "external@^1.0.0"]);
+        assert.deepEqual(options, { cwd: path.join(testDir, "packages/package-1"), stdio: STDIO_OPT });
         installed = true;
         callback();
       });
 
-      bootstrapCommand.runCommand(exitWithCode(0, err => {
+      bootstrapCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -160,11 +160,11 @@ describe("BootstrapCommand", () => {
   describe("external dependencies that have already been installed", () => {
     let testDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("BootstrapCommand/warm", done);
     });
 
-    it("should not get re-installed", done => {
+    it("should not get re-installed", (done) => {
       const bootstrapCommand = new BootstrapCommand([], {});
 
       bootstrapCommand.runValidations();
@@ -176,7 +176,7 @@ describe("BootstrapCommand", () => {
         callback();
       });
 
-      bootstrapCommand.runCommand(exitWithCode(0, err => {
+      bootstrapCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {

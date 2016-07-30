@@ -16,15 +16,15 @@ describe("ImportCommand", () => {
   describe("import", () => {
     let testDir, externalDir;
 
-    beforeEach(done => {
+    beforeEach((done) => {
       testDir = initFixture("ImportCommand/basic", done);
     });
 
-    beforeEach(done => {
+    beforeEach((done) => {
       externalDir = initExternalFixture("ImportCommand/external", done);
     });
 
-    it("should import into packages with commit history", done => {
+    it("should import into packages with commit history", (done) => {
       const importCommand = new ImportCommand([externalDir], {});
 
       importCommand.runValidations();
@@ -36,7 +36,7 @@ describe("ImportCommand", () => {
         ]],
       ]);
 
-      importCommand.runCommand(exitWithCode(0, err => {
+      importCommand.runCommand(exitWithCode(0, (err) => {
         if (err) return done(err);
 
         try {
@@ -52,7 +52,7 @@ describe("ImportCommand", () => {
       }));
     });
 
-    it("should be possible to skip asking for confirmation", done => {
+    it("should be possible to skip asking for confirmation", (done) => {
 
       const importCommand = new ImportCommand([externalDir], {
         yes: true
@@ -64,34 +64,34 @@ describe("ImportCommand", () => {
       importCommand.initialize(done);
     });
 
-    it("should fail without an argument", done => {
+    it("should fail without an argument", (done) => {
       const importCommand = new ImportCommand([], {});
 
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = "Missing argument: Path to external repository";
         assert.equal((err || {}).message, expect);
         done();
       }));
     });
 
-    it("should fail with a missing external directory", done => {
+    it("should fail with a missing external directory", (done) => {
       const missing = externalDir + "_invalidSuffix";
       const importCommand = new ImportCommand([missing], {});
 
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = `No repository found at "${missing}"`;
         assert.equal((err || {}).message, expect);
         done();
       }));
     });
 
-    it("should fail with a missing package.json", done => {
+    it("should fail with a missing package.json", (done) => {
       const importCommand = new ImportCommand([externalDir], {});
 
       const packageJson = path.join(externalDir, "package.json");
@@ -101,14 +101,14 @@ describe("ImportCommand", () => {
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = `Cannot find module '${packageJson}'`;
         assert.equal((err || {}).message, expect);
         done();
       }));
     });
 
-    it("should fail with no name in package.json", done => {
+    it("should fail with no name in package.json", (done) => {
       const importCommand = new ImportCommand([externalDir], {});
 
       const packageJson = path.join(externalDir, "package.json");
@@ -118,14 +118,14 @@ describe("ImportCommand", () => {
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = `No package name specified in "${packageJson}"`;
         assert.equal((err || {}).message, expect);
         done();
       }));
     });
 
-    it("should fail if target directory exists", done => {
+    it("should fail if target directory exists", (done) => {
       const importCommand = new ImportCommand([externalDir], {});
 
       const targetDir = path.relative(
@@ -138,14 +138,14 @@ describe("ImportCommand", () => {
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = `Target directory already exists "${targetDir}"`;
         assert.equal((err || {}).message, expect);
         done();
       }));
     });
 
-    it("should fail if repo has uncommitted changes", done => {
+    it("should fail if repo has uncommitted changes", (done) => {
       const importCommand = new ImportCommand([externalDir], {});
 
       const uncommittedFile = path.join(testDir, "ucommittedFile");
@@ -157,7 +157,7 @@ describe("ImportCommand", () => {
       importCommand.runValidations();
       importCommand.runPreparations();
 
-      importCommand.runCommand(exitWithCode(1, err => {
+      importCommand.runCommand(exitWithCode(1, (err) => {
         const expect = "Local repository has un-committed changes";
         assert.equal((err || {}).message, expect);
         done();

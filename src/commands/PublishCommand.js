@@ -47,7 +47,7 @@ export default class PublishCommand extends Command {
 
       if (!versions) {
         versions = {};
-        this.updates.forEach(update => {
+        this.updates.forEach((update) => {
           versions[update.package.name] = version;
         });
       }
@@ -99,7 +99,7 @@ export default class PublishCommand extends Command {
     this.logger.newLine();
     this.logger.info("Publishing packages to npm...");
 
-    this.npmPublishAsPrerelease(err => {
+    this.npmPublishAsPrerelease((err) => {
       if (err) {
         callback(err);
         return;
@@ -111,7 +111,7 @@ export default class PublishCommand extends Command {
         GitUtilities.checkoutChanges("packages/*/package.json");
       }
 
-      this.npmUpdateAsLatest(err => {
+      this.npmUpdateAsLatest((err) => {
         if (err) {
           callback(err);
           return;
@@ -125,7 +125,7 @@ export default class PublishCommand extends Command {
 
         let message = "Successfully published:";
 
-        this.updates.forEach(update => {
+        this.updates.forEach((update) => {
           message += `\n - ${update.package.name}@${update.package.version}`;
         });
 
@@ -162,7 +162,7 @@ export default class PublishCommand extends Command {
       const versions = {};
       const canaryVersionSuffix = this.getCanaryVersionSuffix();
 
-      this.updates.forEach(update => {
+      this.updates.forEach((update) => {
         versions[update.package.name] = update.package.version + canaryVersionSuffix;
       });
 
@@ -206,7 +206,7 @@ export default class PublishCommand extends Command {
         { value: major, name: `Major (${major})` },
         { value: false, name: "Custom" }
       ]
-    }, choice => {
+    }, (choice) => {
       if (choice) {
         callback(null, choice);
         return;
@@ -214,8 +214,8 @@ export default class PublishCommand extends Command {
 
       PromptUtilities.input("Enter a custom version", {
         filter: semver.valid,
-        validate: v => semver.valid(v) ? true : "Must be a valid semver version",
-      }, input => {
+        validate: (v) => semver.valid(v) ? true : "Must be a valid semver version",
+      }, (input) => {
         callback(null, input);
       });
     });
@@ -230,7 +230,7 @@ export default class PublishCommand extends Command {
     this.logger.newLine();
 
     if (!this.flags.yes) {
-      PromptUtilities.confirm("Are you sure you want to publish the above changes?", confirm => {
+      PromptUtilities.confirm("Are you sure you want to publish the above changes?", (confirm) => {
         callback(null, confirm);
       });
     } else {
@@ -250,7 +250,7 @@ export default class PublishCommand extends Command {
   updateUpdatedPackages() {
     const changedFiles = [];
 
-    this.updates.forEach(update => {
+    this.updates.forEach((update) => {
       const pkg = update.package;
       const packageLocation = pkg.location;
       const packageJsonLocation = path.join(packageLocation, "package.json");
@@ -282,7 +282,7 @@ export default class PublishCommand extends Command {
       return;
     }
 
-    this.packageGraph.get(pkg.name).dependencies.forEach(depName => {
+    this.packageGraph.get(pkg.name).dependencies.forEach((depName) => {
       const version = this.updatesVersions[depName];
 
       if (deps[depName] && version) {
@@ -304,7 +304,7 @@ export default class PublishCommand extends Command {
   gitCommitAndTagVersionForUpdates() {
     let message = "Publish\n";
 
-    const tags = this.updates.map(update => {
+    const tags = this.updates.map((update) => {
       const tag = `${update.package.name}@${this.updatesVersions[update.package.name]}`;
       message += `\n - ${tag}`;
       return tag;
@@ -333,7 +333,7 @@ export default class PublishCommand extends Command {
   }
 
   npmPublishAsPrerelease(callback) {
-    this.updates.forEach(update => {
+    this.updates.forEach((update) => {
       this.execScript(update.package, "prepublish");
     });
 
@@ -344,10 +344,10 @@ export default class PublishCommand extends Command {
 
       let attempts = 0;
 
-      const run = cb => {
+      const run = (cb) => {
         this.logger.debug("Publishing " + pkg.name + "...");
 
-        NpmUtilities.publishTaggedInDir("lerna-temp", pkg.location, err => {
+        NpmUtilities.publishTaggedInDir("lerna-temp", pkg.location, (err) => {
           err = err && err.stack || err;
 
           if (!err ||
@@ -373,7 +373,7 @@ export default class PublishCommand extends Command {
       };
 
       return run;
-    }), this.concurrency, err => {
+    }), this.concurrency, (err) => {
       this.progressBar.terminate();
       callback(err);
     });
@@ -382,7 +382,7 @@ export default class PublishCommand extends Command {
   npmUpdateAsLatest(callback) {
     this.progressBar.init(this.updates.length);
 
-    async.parallelLimit(this.updates.map(update => cb => {
+    async.parallelLimit(this.updates.map((update) => (cb) => {
       const pkg = update.package;
 
       let attempts = 0;
@@ -416,7 +416,7 @@ export default class PublishCommand extends Command {
           }
         }
       }
-    }), 4, err => {
+    }), 4, (err) => {
       this.progressBar.terminate();
       callback(err);
     });
