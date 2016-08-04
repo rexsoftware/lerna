@@ -1,5 +1,5 @@
 {
-  "name": "lerna",
+  "name": "@rexsoftware/lerna",
   "version": "2.0.0-beta.rex.24",
   "description": "Tool for managing JavaScript projects with multiple packages",
   "main": "lib/index.js",
