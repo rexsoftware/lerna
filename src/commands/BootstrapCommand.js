@@ -7,6 +7,7 @@ import async from "async";
 import find from "lodash.find";
 import path from "path";
 import normalize from "normalize-path";
+import objectAssign from "object-assign";
 
 export default class BootstrapCommand extends Command {
   initialize(callback) {
@@ -184,7 +185,7 @@ export default class BootstrapCommand extends Command {
   }
 
   installExternalPackages(pkg, callback) {
-    const allDependencies = pkg.allDependencies;
+    const allDependencies = this.getAllDependencies(pkg);
 
     const externalPackages = Object.keys(allDependencies)
       .filter((dependency) => {
@@ -209,7 +210,7 @@ export default class BootstrapCommand extends Command {
   }
 
   hasMatchingDependency(pkg, dependency, showWarning = false) {
-    const expectedVersion = pkg.allDependencies[dependency.name];
+    const expectedVersion = this.getAllDependencies(pkg)[dependency.name];
     const actualVersion = dependency.version;
 
     if (!expectedVersion) {
@@ -236,7 +237,7 @@ export default class BootstrapCommand extends Command {
     try {
       return this.isCompatableVersion(
         require(packageJson).version,
-        pkg.allDependencies[dependency]
+        this.getAllDependencies(pkg)[dependency]
       );
     } catch (e) {
       return false;
@@ -245,5 +246,15 @@ export default class BootstrapCommand extends Command {
 
   isCompatableVersion(actual, expected) {
     return semver.satisfies(actual, expected);
+  }
+
+  isIgnoringPeerDeps() {
+    return this.flags["ignore-peer-deps"] || this.repository.bootstrapConfig.ignorePeerDeps;
+  }
+
+  getAllDependencies(pkg) {
+    return this.isIgnoringPeerDeps() ?
+      objectAssign({}, pkg.dependencies, pkg.devDependencies) :
+      pkg.allDependencies;
   }
 }
