@@ -5,6 +5,8 @@ import Command from "../Command";
 import async from "async";
 import find from "lodash.find";
 import path from "path";
+import normalize from "normalize-path";
+import objectAssign from "object-assign";
 
 export default class BootstrapCommand extends Command {
   initialize(callback) {
@@ -160,7 +162,7 @@ export default class BootstrapCommand extends Command {
     this.progressBar.init(this.filteredPackages.length);
     const actions = [];
     this.filteredPackages.forEach((pkg) => {
-      const allDependencies = pkg.allDependencies;
+      const allDependencies = this.getAllDependencies(pkg);
       const externalPackages = Object.keys(allDependencies)
         .filter((dependency) => {
           const match = find(this.packages, (pkg) => {
@@ -195,7 +197,7 @@ export default class BootstrapCommand extends Command {
     this.filteredPackages.forEach((filteredPackage) => {
       // actions to run for this package
       const packageActions = [];
-      Object.keys(filteredPackage.allDependencies)
+      Object.keys(this.getAllDependencies(filteredPackage))
         // filter out external dependencies and incompatible packages
         .filter((dependency) => {
           const match = this.packageGraph.get(dependency);
@@ -263,5 +265,15 @@ export default class BootstrapCommand extends Command {
       this.progressBar.terminate();
       callback(err);
     });
+  }
+
+  isIgnoringPeerDeps() {
+    return this.flags["ignore-peer-deps"] || this.repository.bootstrapConfig.ignorePeerDeps;
+  }
+
+  getAllDependencies(pkg) {
+    return this.isIgnoringPeerDeps() ?
+      objectAssign({}, pkg.dependencies, pkg.devDependencies) :
+      pkg.allDependencies;
   }
 }

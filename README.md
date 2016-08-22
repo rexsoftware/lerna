@@ -126,7 +126,7 @@ Example output on a new git repo:
 
 ```sh
 > lerna init
-$ Lerna v2.0.0-beta.18
+$ Lerna v2.0.0-beta.26
 $ Creating packages directory.
 $ Updating package.json.
 $ Creating lerna.json.
@@ -414,7 +414,7 @@ Running `lerna` without arguments will show all commands/options.
 
 ```js
 {
-  "lerna": "2.0.0-beta.18",
+  "lerna": "2.0.0-beta.26",
   "version": "1.1.3",
   "publishConfig": {
     "ignore": [
@@ -501,7 +501,7 @@ The `ignore` flag, when used with the `bootstrap` command, can also be set in `l
 
 ```javascript
 {
-  "lerna": "2.0.0-beta.16",
+  "lerna": "2.0.0-beta.26",
   "version": "0.0.0",
   "bootstrapConfig": {
     "ignore": "component-*"
@@ -511,6 +511,30 @@ The `ignore` flag, when used with the `bootstrap` command, can also be set in `l
 
 > Hint: The glob is matched against the package name defined in `package.json`,
 > not the directory name the package lives in.
+
+#### --ignore-peer-deps
+
+Excludes `peerDependencies` packages when performing installs from a `bootstrap` command.
+
+> Hint: This is the same behaviour as `npm install`.
+
+```shell
+$ lerna bootstrap --ignore-peer-deps
+```
+
+The `ignorePeerDeps` flag can also be set in the `lerna.json` under the `bootstrapConfig`.
+
+**Example**
+
+```javascript
+{
+  "lerna": "2.0.0-beta.26",
+  "version": "0.0.0",
+  "bootstrapConfig": {
+    "ignorePeerDeps": true
+  }
+}
+```
 
 #### --only-explicit-updates
 
