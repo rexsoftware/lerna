@@ -5,6 +5,7 @@ import Command from "../Command";
 import async from "async";
 import find from "lodash.find";
 import path from "path";
+import objectAssign from "object-assign";
 
 export default class BootstrapCommand extends Command {
   initialize(callback) {
