@@ -32,6 +32,11 @@ export const builder = {
     describe: "Don't hoist external dependencies matching [glob] to the repo root",
     type: "string"
   },
+  "noscripts": {
+    group: "Command Options:",
+    describe: "Don't run lifecycle scripts in packages",
+    type: "boolean"
+  },
   "npm-client": {
     group: "Command Options:",
     describe: "Executable used to install dependencies (npm, yarn, pnpm, ...)",
@@ -83,20 +88,22 @@ export default class BootstrapCommand extends Command {
    * @param {Function} callback
    */
   bootstrapPackages(callback) {
+    const { noscripts } = this.options;
     this.logger.info("", `Bootstrapping ${this.filteredPackages.length} packages`);
+    const steps = [];
 
-    async.series([
-      // preinstall bootstrapped packages
-      (cb) => this.preinstallPackages(cb),
-      // install external dependencies
-      (cb) => this.installExternalDependencies(cb),
-      // symlink packages and their binaries
-      (cb) => this.symlinkPackages(cb),
-      // postinstall bootstrapped packages
-      (cb) => this.postinstallPackages(cb),
-      // prepublish bootstrapped packages
-      (cb) => this.prepublishPackages(cb)
-    ], callback);
+    // preinstall bootstrapped packages
+    !noscripts && steps.push((cb) => this.preinstallPackages(cb));
+    // install external dependencies
+    steps.push((cb) => this.installExternalDependencies(cb));
+    // symlink packages and their binaries
+    steps.push((cb) => this.symlinkPackages(cb));
+    // postinstall bootstrapped packages
+    !noscripts && steps.push((cb) => this.postinstallPackages(cb));
+    // prepublish bootstrapped packages
+    !noscripts && steps.push((cb) => this.prepublishPackages(cb));
+
+    async.series(steps, callback);
   }
 
   runScriptInPackages(scriptName, callback) {
