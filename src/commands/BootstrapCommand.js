@@ -32,6 +32,11 @@ export const builder = {
     describe: "Don't hoist external dependencies matching [glob] to the repo root",
     type: "string",
   },
+  "noprune": {
+    group: "Command Options:",
+    describe: "Don't prune hoisted dependencies unrelated to dependents",
+    type: "boolean"
+  },
   "npm-client": {
     group: "Command Options:",
     describe: "Executable used to install dependencies (npm, yarn, pnpm, ...)",
@@ -411,6 +416,7 @@ export default class BootstrapCommand extends Command {
   installExternalDependencies(callback) {
     const tracker = this.logger.newItem("install dependencies");
 
+    const { noprune } = this.options;
     const { leaves, root } = this.getDependenciesToInstall(tracker);
     const actions = [];
 
@@ -460,7 +466,7 @@ export default class BootstrapCommand extends Command {
 
       // Remove any hoisted dependencies that may have previously been
       // installed in package directories.
-      actions.push((cb) => {
+      !noprune && actions.push((cb) => {
         // Compute the list of candidate directories synchronously
         const candidates = root
           .filter((pkg) => pkg.dependents.length)
